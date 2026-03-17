@@ -1,10 +1,39 @@
 $(document).ready(function() {
-    let n = parseInt($('#grid').data('n'));
-    let showAlert = $('#grid').data('alert') === 'True';
+    // 1. Parse URL for grid dimension N
+    const urlParams = new URLSearchParams(window.location.search);
+    let n = parseInt(urlParams.get('n')) || 5;
+    
+    // Clamp to [5, 9]
+    let showAlert = false;
+    if (n < 5) { n = 5; showAlert = true; }
+    if (n > 9) { n = 9; showAlert = true; }
     
     if (showAlert) {
         alert("網格的 NxN 要求為 5~9, 已強制設定為 " + n);
+        // Correct the URL strictly so users can share it properly
+        window.history.replaceState(null, '', `?n=${n}`);
     }
+
+    // 2. Generate Grid DOM dynamically
+    let gridWrapper = $('#grid-wrapper');
+    gridWrapper.css('--n', n);
+    let gridContainer = $('#grid');
+    gridContainer.empty();
+    
+    for (let r = 0; r < n; r++) {
+        for (let c = 0; c < n; c++) {
+            let cellHtml = `
+                <div class="cell" data-r="${r}" data-c="${c}" data-type="empty">
+                    <div class="cell-bg"></div>
+                    <div class="cell-content">
+                        <span class="v-value">0.0</span>
+                        <div class="policy-arrow" style="display: none;"></div>
+                    </div>
+                </div>`;
+            gridContainer.append(cellHtml);
+        }
+    }
+
     let gridData = Array(n).fill().map(() => Array(n).fill('empty'));
     let VData = null;
     let policyData = null;
@@ -125,6 +154,78 @@ $(document).ready(function() {
         }
     }
 
+    function calculateRLStep(grid, noise, gamma, step_reward, oldV) {
+        let rows = n;
+        let cols = n;
+        
+        let V = oldV;
+        if (!V || V.length === 0) {
+            V = Array(rows).fill().map(() => Array(cols).fill(0.0));
+            for(let r=0; r<rows; r++) {
+                for(let c=0; c<cols; c++) {
+                    if (grid[r][c] === 'goal') V[r][c] = 10.0;
+                    else if (grid[r][c] === 'obstacle') V[r][c] = 0.0;
+                }
+            }
+        }
+        
+        // Deep copy V
+        let newV = V.map(row => [...row]);
+        let policy = Array(rows).fill().map(() => Array(cols).fill(0));
+        let dirs = [[-1, 0], [0, 1], [1, 0], [0, -1]]; // 0: Up, 1: Right, 2: Down, 3: Left
+        
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                if (grid[r][c] === 'goal' || grid[r][c] === 'obstacle') continue;
+                
+                let Q_values = [];
+                for (let a = 0; a < 4; a++) {
+                    let transitions = [
+                        [a, 1.0 - 2.0 * noise],
+                        [(a + 3) % 4, noise], // Same as (a - 1) % 4 in positive domain
+                        [(a + 1) % 4, noise]
+                    ];
+                    
+                    let expected_value = 0.0;
+                    for (let tr of transitions) {
+                        let act_dir = tr[0];
+                        let prob = tr[1];
+                        if (prob === 0) continue;
+                        
+                        let dr = dirs[act_dir][0];
+                        let dc = dirs[act_dir][1];
+                        let nr = r + dr;
+                        let nc = c + dc;
+                        
+                        let next_v;
+                        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] !== 'obstacle') {
+                            next_v = V[nr][nc];
+                        } else {
+                            next_v = V[r][c]; // Bump into wall/obstacle
+                        }
+                        
+                        expected_value += prob * (step_reward + gamma * next_v);
+                    }
+                    Q_values.push(expected_value);
+                }
+                
+                let maxQ = Math.max(...Q_values);
+                newV[r][c] = maxQ;
+                policy[r][c] = Q_values.indexOf(maxQ);
+            }
+        }
+        
+        let delta = 0;
+        for(let r=0; r<rows; r++) {
+            for(let c=0; c<cols; c++) {
+                let diff = Math.abs(newV[r][c] - V[r][c]);
+                if (diff > delta) delta = diff;
+            }
+        }
+        
+        return { V: newV, policy: policy, delta: delta };
+    }
+
     function doStep(callback) {
         let payload = {
             grid: gridData,
@@ -134,25 +235,19 @@ $(document).ready(function() {
             V: VData
         };
 
-        $.ajax({
-            url: calculateUrl,
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(payload),
-            success: function(res) {
-                VData = res.V;
-                policyData = res.policy;
-                iteration++;
-                $('#iteration-count').text(iteration);
-                $('#delta-value').text(res.delta.toFixed(4));
-                renderGrid();
-                if (callback) callback(res.delta);
-            },
-            error: function(err) {
-                console.error("Error calculating RL step", err);
-                isRunning = false;
-            }
-        });
+        try {
+            let res = calculateRLStep(payload.grid, payload.noise, payload.gamma, payload.step_reward, payload.V);
+            VData = res.V;
+            policyData = res.policy;
+            iteration++;
+            $('#iteration-count').text(iteration);
+            $('#delta-value').text(res.delta.toFixed(4));
+            renderGrid();
+            if (callback) callback(res.delta);
+        } catch (err) {
+            console.error("Error calculating RL step", err);
+            isRunning = false;
+        }
     }
 
     function runToConvergence() {

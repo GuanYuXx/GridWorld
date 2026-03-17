@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GridWorld RL</title>
+    <link rel="stylesheet" href="./static/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>網格世界強化學習 (GridWorld RL)</h1>
+            <p>Phase 1-3: 競技場建置、核心引擎串接、最佳化與視覺呈現</p>
+        </header>
+
+        <div class="main-content">
+            <div class="panel controls">
+                <section class="control-group">
+                    <h3>1. 環境設定</h3>
+                    <form method="GET" action="/">
+                        <label for="n-input">網格維度 (N x N):</label>
+                        <input type="number" id="n-input" name="n" value="5" min="5" max="9">
+                        <button type="submit" class="btn" id="btn-generate">重新生成網格</button>
+                    </form>
+                </section>
+
+                <section class="control-group">
+                    <h3>2. 編輯模式 (點擊網格)</h3>
+                    <div class="brush-selector">
+                        <label><input type="radio" name="brush" value="start" checked> <span class="badge start">起點</span></label>
+                        <label><input type="radio" name="brush" value="goal"> <span class="badge goal">終點</span></label>
+                        <label><input type="radio" name="brush" value="obstacle"> <span class="badge obstacle">障礙物</span></label>
+                    </div>
+                    <p id="obstacle-hint" style="color: #ef4444; font-size: 0.9em; margin-top: 10px; display: none;">提示：障礙物數量已達上限 (N-2個)</p>
+                </section>
+
+                <section class="control-group">
+                    <h3>3. MDP 參數</h3>
+                    <div class="slider-group">
+                        <label>折扣因子 γ (Gamma): <span id="gamma-val">0.90</span></label>
+                        <input type="range" id="gamma" min="0" max="1" step="0.05" value="0.90">
+                    </div>
+                    <div class="slider-group">
+                        <label>轉移雜訊 Noise (b): <span id="noise-val">0.10</span></label>
+                        <input type="range" id="noise" min="0" max="0.5" step="0.05" value="0.10">
+                    </div>
+                    <div class="slider-group">
+                        <label>每步獎勵 (Step Reward): <span id="reward-val">-1.0</span></label>
+                        <input type="range" id="step_reward" min="-10" max="0" step="0.5" value="-1.0">
+                    </div>
+                </section>
+
+                <section class="control-group">
+                    <h3>4. 價值迭代 (Value Iteration)</h3>
+                    <div class="button-group">
+                        <button id="btn-step" class="btn primary">單步迭代</button>
+                        <button id="btn-run" class="btn success">執行至收斂</button>
+                    </div>
+                    <div class="button-group">
+                        <button id="btn-reset-v" class="btn warning">重設價值</button>
+                        <button id="btn-clear-path" class="btn danger">清除路徑</button>
+                    </div>
+                    <div class="status-bar">
+                        <p>當前迭代次數: <span id="iteration-count">0</span></p>
+                        <p>Delta (Δ): <span id="delta-value">0.000</span></p>
+                    </div>
+                </section>
+                
+                <section class="control-group">
+                    <h3>5. 策略萃取 (Policy Extraction)</h3>
+                    <button id="btn-draw-path" class="btn primary">繪製最佳路徑</button>
+                </section>
+            </div>
+
+            <div class="panel grid-container">
+                <div id="grid-wrapper">
+                    <svg id="path-layer" width="100%" height="100%"></svg>
+                    <div id="grid">
+                        <!-- JS generated grid cells go here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="./static/script.js"></script>
+</body>
+</html>
