@@ -1,25 +1,12 @@
 # GridWorld RL (Value Iteration)
 
-![Demo Short](demo_file/demo_short.gif)
-
 ## Overview
 This project implements a GridWorld environment to demonstrate the core concepts of Reinforcement Learning (RL), specifically focusing on **Value Iteration**. Users can interactively design their own GridWorld by placing a start point, goals, traps, and obstacles. The application visualizes how the State Value Function ($V$) and the corresponding Policy ($\pi$) evolve iteratively based on the Markov Decision Process (MDP) parameters such as Discount Factor ($\gamma$), Transition Noise, and Step Reward. 
 
 ## Project Structure
 ```
-GridWorld/
-│
-├── app.py                 # Flask web server and backend logic for RL calculations
-├── demo_file/             # Directory containing demonstrations and reference materials
-│   └── Demo.mp4           # Demonstration video of the application
-│   └── HW_request.png     # Original homework/project request image
-│   └── new2Grid_World_RL_Blueprint.pdf # Reference documentation
-│   └── QA_record.md       # Q&A record explaining core mechanics (Noise, Step Reward)
-├── static/                # Static assets for the frontend
-│   ├── script.js          # Interactive frontend logic and AJAX calls
-│   └── style.css          # Styling for the application
-└── templates/             # HTML templates
-    └── index.html         # Main user interface layout
+
+```
 # GridWorld RL - GitHub Pages Static Version
 
 ## 版本目標 (Version Goals)
