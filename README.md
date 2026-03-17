@@ -34,10 +34,7 @@ GridWorld/
 ## Demo
 Watch the demonstration video below to see the GridWorld RL application in action:
 
-<video width="800" controls>
-  <source src="demo_file/Demo.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+https://github.com/GuanYuXx/GridWorld/raw/main/demo_file/Demo.mp4
 
 ## Repository
-*(Link to the Git repository will be available here after pushing)*
+[https://github.com/GuanYuXx/GridWorld](https://github.com/GuanYuXx/GridWorld)
