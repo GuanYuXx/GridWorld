@@ -34,9 +34,8 @@ GridWorld/
 4. **Policy Extraction & Pathfinding**: Once the optimal policy is computed, the application can extract and draw the optimal path from the Start state to the Goal.
 
 ## Demo
-Watch the demonstration video below to see the GridWorld RL application in action:
 
-https://github.com/GuanYuXx/GridWorld/raw/main/demo_file/Demo.mp4
+[https://github.com/GuanYuXx/GridWorld/raw/main/demo_file/Demo.mp4](https://guanyuxx.github.io/GridWorld/)
 
 ## Repository
 [https://github.com/GuanYuXx/GridWorld](https://github.com/GuanYuXx/GridWorld)
