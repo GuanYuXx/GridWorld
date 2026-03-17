@@ -1,5 +1,10 @@
 $(document).ready(function() {
     let n = parseInt($('#grid').data('n'));
+    let showAlert = $('#grid').data('alert') === 'True';
+    
+    if (showAlert) {
+        alert("網格的 NxN 要求為 5~9, 已強制設定為 " + n);
+    }
     let gridData = Array(n).fill().map(() => Array(n).fill('empty'));
     let VData = null;
     let policyData = null;
@@ -208,7 +213,7 @@ $(document).ready(function() {
         
         while (steps < maxSteps) {
             let r = curr.r, c = curr.c;
-            if (gridData[r][c] === 'goal' || gridData[r][c] === 'trap') break;
+            if (gridData[r][c] === 'goal') break;
             
             let key = `${r},${c}`;
             if (visited.has(key)) {

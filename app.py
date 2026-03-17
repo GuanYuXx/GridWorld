@@ -6,7 +6,16 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     n = request.args.get('n', 5, type=int)
-    return render_template('index.html', n=n)
+    show_alert = False
+    
+    if n < 5:
+        n = 5
+        show_alert = True
+    elif n > 9:
+        n = 9
+        show_alert = True
+        
+    return render_template('index.html', n=n, show_alert=show_alert)
 
 @app.route('/calculate', methods=['POST'])
 def calculate():
@@ -26,8 +35,6 @@ def calculate():
             for c in range(cols):
                 if grid[r][c] == 'goal':
                     V[r, c] = 10.0
-                elif grid[r][c] == 'trap':
-                    V[r, c] = -10.0
                 elif grid[r][c] == 'obstacle':
                     V[r, c] = 0.0
     else:
@@ -41,7 +48,7 @@ def calculate():
     
     for r in range(rows):
         for c in range(cols):
-            if grid[r][c] in ['goal', 'trap', 'obstacle']:
+            if grid[r][c] in ['goal', 'obstacle']:
                 continue
                 
             Q_values = []

@@ -21,8 +21,8 @@
                     <h3>1. 環境設定</h3>
                     <form method="GET" action="/">
                         <label for="n-input">網格維度 (N x N):</label>
-                        <input type="number" id="n-input" name="n" value="{{ n }}" min="3" max="20">
-                        <button type="submit" class="btn">重新生成網格</button>
+                        <input type="number" id="n-input" name="n" value="{{ n }}" min="5" max="9">
+                        <button type="submit" class="btn" id="btn-generate">重新生成網格</button>
                     </form>
                 </section>
 
@@ -32,7 +32,6 @@
                         <label><input type="radio" name="brush" value="empty" checked> <span class="badge empty">空格</span></label>
                         <label><input type="radio" name="brush" value="start"> <span class="badge start">起點</span></label>
                         <label><input type="radio" name="brush" value="goal"> <span class="badge goal">終點</span></label>
-                        <label><input type="radio" name="brush" value="trap"> <span class="badge trap">陷阱</span></label>
                         <label><input type="radio" name="brush" value="obstacle"> <span class="badge obstacle">障礙物</span></label>
                     </div>
                 </section>
@@ -78,7 +77,7 @@
             <div class="panel grid-container">
                 <div id="grid-wrapper" style="--n: {{ n }};">
                     <svg id="path-layer" width="100%" height="100%"></svg>
-                    <div id="grid" data-n="{{ n }}">
+                    <div id="grid" data-n="{{ n }}" data-alert="{{ show_alert }}">
                         {% for r in range(n) %}
                             {% for c in range(n) %}
                                 <div class="cell" data-r="{{ r }}" data-c="{{ c }}" data-type="empty">
