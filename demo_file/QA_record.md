@@ -120,3 +120,20 @@
 2. **移除「空格」畫筆與 Toggle 機制**：移除了「空格」選項。現在只要選擇任何畫筆（如「障礙物」），點擊空地會放置障礙物；**再點一次該障礙物**，就會自動變回「空格」。
 3. **無干擾的障礙物上限提示**：移除了彈出式的 `alert`（避免洗版）。改成在左側的「障礙物」按鈕下方新增了一行隱藏的紅色提示文字「提示：障礙物數量已達上限 (N-2個)」。當畫滿 `n-2` 個障礙物又試圖放置時，這行字才會靜靜地浮現，不會打斷操作。
 
+## 11. Github Pages 不能放 Flask Server，有什麼方式可以解決？
+為了解決此問題，我們建立了一個獨立的 `non_flask` 分支。我們將原本在後端的價值迭代演算法，完全移植為前端的 JavaScript 計算，使其成為一個純前端靜態網站。
+
+## 12. 這樣 main 分支是不是也要連同一起改？
+不需要。`main` 分支將保留有 Flask Server 的版本，而 `non_flask` 是一個專門用來發布到 GitHub Pages 的純靜態分支。
+
+## 13. 切換到 non_flask 後，將靜態網站重構計畫寫在 README.md。
+已直接將 `non_flask` 分支的 README 內容重新構寫，改為專屬於純前端網頁的架構解說與 GitHub Pages 部署說明。
+
+## 14. NxN 網格上傳 GitHub Pages 後出錯，希望在不改變 URL 的情況下，在靜態網頁完動態生成網格。
+原因是 GitHub Pages 本身對 `/?n=X` 網址參數的處理機制異常。解決方式是透過 JavaScript 攔截表單的 `submit` 事件並 `preventDefault`，然後直接依靠前端操作 DOM 來動態重繪網格，在此過程中不會更動任何網址。
+
+## 15. 在副標題底下添加作者姓名與學號，且只寫在 non_flask，之後切換其他分支不用加。
+已在 `non_flask` 分支專屬的 `index.html` 首頁標籤中，客製化加入了「姓名:陳冠宇 | 學號:7114029044」的附註。
+
+## 16. 把 Demo 影片換成 GIF、Demo 標題改寫為 GitHub Pages、新增環境需求、產生 Docker 適用的 requirements.txt，最後將對話更新至 QA_record 並在 README 加上 Value Iteration 演算法 (英文)。
+已將影片轉檔為 `demo_main.gif` 並加回文件，補齊了相關環境資訊 (Python, JS, Java 等)。現在也已經為您把這段對話記錄進了 QA_record 之中，並將附有 Value Function 數學公式的 Value Iteration 原理新增到了 README.md 中！

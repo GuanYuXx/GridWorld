@@ -5,6 +5,18 @@
 ## Overview
 This project implements a GridWorld environment to demonstrate the core concepts of Reinforcement Learning (RL), specifically focusing on **Value Iteration**. Users can interactively design their own GridWorld by placing a start point, goals, traps, and obstacles. The application visualizes how the State Value Function ($V$) and the corresponding Policy ($\pi$) evolve iteratively based on the Markov Decision Process (MDP) parameters such as Discount Factor ($\gamma$), Transition Noise, and Step Reward. 
 
+## Algorithm: Value Iteration
+The core of this application computes the **State Value Function ($V$)**. The algorithm updates the value of each state $s$ iteratively using the Bellman Optimality Equation:
+
+$$ V_{k+1}(s) = \max_a \sum_{s'} P(s' | s, a) [R(s, a, s') + \gamma V_k(s')] $$
+
+In the context of this GridWorld:
+* **$V_k(s)$**: The expected utility (value) of state $s$ at iteration $k$.
+* **$\max_a$**: The agent selects the optimal action $a$ (Up, Down, Left, Right) that maximizes the expected return.
+* **$P(s' | s, a)$**: The transition probability (incorporating the Transition Noise $b$) of reaching state $s'$ after executing action $a$ from state $s$.
+* **$R(s, a, s')$**: The immediate Step Reward gained by transitioning from $s$ to $s'$.
+* **$\gamma$ (Gamma)**: The Discount Factor, determining the current value of future rewards.
+
 ## Project Structure
 ```
 GridWorld/
