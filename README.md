@@ -20,23 +20,46 @@ GridWorld/
 │   └── style.css          # Styling for the application
 └── templates/             # HTML templates
     └── index.html         # Main user interface layout
-```
+# GridWorld RL - GitHub Pages Static Version
 
-## Key Features
-1. **Interactive Grid Editor**: Click and drag to place the Start state, Goals (+10), Traps (-10), and Obstacles on a configurable $N \times N$ grid.
-2. **Adjustable MDP Parameters**: 
-    - **Discount Factor ($\gamma$)**: Determines the importance of future rewards.
-    - **Transition Noise ($b$)**: Simulates a slippery environment where the agent has a probability $b$ of moving perpendicular to its intended direction.
-    - **Step Reward**: A constant reward (usually negative, e.g., -1.0) given for every step taken to encourage finding the shortest path.
-3. **Real-time Value Iteration Visualization**: 
-    - Execute value iteration step-by-step or run it until convergence. 
-    - Observe how values propagate through the grid and how the optimal policy updates dynamically.
-4. **Policy Extraction & Pathfinding**: Once the optimal policy is computed, the application can extract and draw the optimal path from the Start state to the Goal.
+## 版本目標 (Version Goals)
+這個分支 (`non_flask`) 是特別為部署到 **GitHub Pages** 所重構的純前端版本。
+原本在 `main` 分支中依賴 Flask (Python Backend) 來處理的「價值迭代算法」數學運算，在這個版本中已完全轉移至前端執行，不再需要 Python 伺服器，**可以直接透過靜態檔案 (HTML/CSS/JS) 運行**。
 
-## Demo
-Watch the demonstration video below to see the GridWorld RL application in action:
+## 系統架構變更 (Architecture Changes)
 
-https://github.com/GuanYuXx/GridWorld/raw/main/demo_file/Demo.mp4
+---
+### 1. 前端邏輯核心 (JavaScript)
+後端的數學計算已成功轉移到瀏覽器本地端執行，並改由 JS 動態生成網頁元素。
 
-## Repository
-[https://github.com/GuanYuXx/GridWorld](https://github.com/GuanYuXx/GridWorld)
+#### `static/script.js`
+- **URL 參數解析**：讀取網址的 `?n=X` 參數來決定網格維度（預設為 5，並進行 `5~9` 的鉗制檢驗）。
+- **網格動態生成**：原本由 Flask 產生的 `<div class="cell">` 網格結構，改由 JavaScript 在網頁載入時動態生成並插入到 `#grid` 中。
+- **演算法移植**：原本 Python 的 `calculate()` 函數（包含計算 Q-values、Value、Policy、Transitions 的兩層 for 迴圈）已被完整翻譯成 JavaScript 的本地函式 `calculateRLStep()`。
+- **本地運算**：不再依賴發送 AJAX API 呼叫給後端，徹底消除網路延遲，提升單步迭代與執行至收斂的運算速度。
+
+---
+### 2. 靜態網頁 (HTML)
+移除了所有 Flask 的 Jinja 樣板語法 (`{{ ... }}` 和 `{% ... %}`)，成為符合 GitHub Pages 規範的標準 HTML 文件。
+
+#### `index.html`
+- 所有 CSS 與 JS 靜態檔案的載入已替換為相對路徑 (`./static/...`)。
+- 為了讓 GitHub Pages 能直接讀取作為網站入口，這個檔案已被從 `templates/` 移動至專案的根目錄 `index.html`。
+
+---
+### 3. 後端伺服器 (Python)
+既然完全轉移為純前端，傳統的 Web 伺服器已不再被需要。
+
+#### `app.py`
+- 在此分支中已被刪除。所有強化學習 (Value Iteration) 邏輯皆已轉移至客戶端。
+
+## 部署與測試 (Deployment and Testing)
+### GitHub Pages 部署
+1. 前往遠端 Repository 的 Settings -> Pages。
+2. 尋找 **Build and deployment** > Source。
+3. 將來源設定為 Deploy from a branch，並選擇 `non_flask` 這個分支。
+4. 儲存後稍等幾分鐘，GitHub 就會分配專屬的網址供任何人線上遊玩。
+
+### 本地測試 (Local Testing)
+1. 使用 Python 內建的簡易靜態伺服器來啟動專案目錄：`python -m http.server 8000`。
+2. 開啟瀏覽器 `http://localhost:8000/index.html` 即可完整運行。
