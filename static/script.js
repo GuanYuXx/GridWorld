@@ -1,44 +1,54 @@
 $(document).ready(function() {
-    // 1. Parse URL for grid dimension N
-    const urlParams = new URLSearchParams(window.location.search);
-    let n = parseInt(urlParams.get('n')) || 5;
-    
-    // Clamp to [5, 9]
-    let showAlert = false;
-    if (n < 5) { n = 5; showAlert = true; }
-    if (n > 9) { n = 9; showAlert = true; }
-    
-    if (showAlert) {
-        alert("網格的 NxN 要求為 5~9, 已強制設定為 " + n);
-        // Correct the URL strictly so users can share it properly
-        window.history.replaceState(null, '', `?n=${n}`);
-    }
-
-    // 2. Generate Grid DOM dynamically
-    let gridWrapper = $('#grid-wrapper');
-    gridWrapper.css('--n', n);
-    let gridContainer = $('#grid');
-    gridContainer.empty();
-    
-    for (let r = 0; r < n; r++) {
-        for (let c = 0; c < n; c++) {
-            let cellHtml = `
-                <div class="cell" data-r="${r}" data-c="${c}" data-type="empty">
-                    <div class="cell-bg"></div>
-                    <div class="cell-content">
-                        <span class="v-value">0.0</span>
-                        <div class="policy-arrow" style="display: none;"></div>
-                    </div>
-                </div>`;
-            gridContainer.append(cellHtml);
-        }
-    }
-
-    let gridData = Array(n).fill().map(() => Array(n).fill('empty'));
+    let n = 5;
+    let gridData = [];
     let VData = null;
     let policyData = null;
     let isRunning = false;
     let iteration = 0;
+
+    function initGrid(newN) {
+        if (newN < 5) { newN = 5; alert("網格的 NxN 要求為 5~9, 已強制設定為 5"); $('#n-input').val(5); }
+        if (newN > 9) { newN = 9; alert("網格的 NxN 要求為 5~9, 已強制設定為 9"); $('#n-input').val(9); }
+        
+        n = newN;
+        let gridWrapper = $('#grid-wrapper');
+        gridWrapper.css('--n', n);
+        let gridContainer = $('#grid');
+        gridContainer.empty();
+        
+        for (let r = 0; r < n; r++) {
+            for (let c = 0; c < n; c++) {
+                let cellHtml = `
+                    <div class="cell" data-r="${r}" data-c="${c}" data-type="empty">
+                        <div class="cell-bg"></div>
+                        <div class="cell-content">
+                            <span class="v-value">0.0</span>
+                            <div class="policy-arrow" style="display: none;"></div>
+                        </div>
+                    </div>`;
+                gridContainer.append(cellHtml);
+            }
+        }
+
+        gridData = Array(n).fill().map(() => Array(n).fill('empty'));
+        resetV();
+        
+        // 重新綁定新格子的事件 (Bind cell events)
+        $('.cell').off('mousedown mouseenter');
+        $('.cell').on('mousedown', function(e) {
+            paintCell($(this));
+        }).on('mouseenter', function(e) {
+            if (isMouseDown) {
+                paintCell($(this));
+            }
+        });
+    }
+
+    // 攔截重新生成網格的表單送出，避免修改網址
+    $('form').on('submit', function(e) {
+        e.preventDefault();
+        initGrid(parseInt($('#n-input').val()) || 5);
+    });
 
     // UI Sliders
     $('#gamma').on('input', function() { $('#gamma-val').text(parseFloat($(this).val()).toFixed(2)); resetV(); });
@@ -50,13 +60,8 @@ $(document).ready(function() {
     $('#grid').on('mousedown', function(e) { e.preventDefault(); isMouseDown = true; });
     $(window).on('mouseup', function() { isMouseDown = false; });
 
-    $('.cell').on('mousedown', function(e) {
-        paintCell($(this));
-    }).on('mouseenter', function(e) {
-        if (isMouseDown) {
-            paintCell($(this));
-        }
-    });
+    // Initial load
+    initGrid(parseInt($('#n-input').val()) || 5);
 
     function paintCell(cellObj) {
         let type = $('input[name="brush"]:checked').val();
