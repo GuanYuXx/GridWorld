@@ -1,6 +1,6 @@
 # GridWorld RL - 強化學習價值迭代展示系統 (Static Version)
 
-![GridWorld Demo](https://github.com/GuanYuXx/GridWorld/raw/main/demo_file/demo_main.gif)
+![GridWorld Demo](https://github.com/GuanYuXx/GridWorld/blob/non_flask/demo_file/demo_main.gif)
 
 ## Overview
 這是一個基於瀏覽器的互動式 **GridWorld 強化學習環境** (純靜態前端版本)。
