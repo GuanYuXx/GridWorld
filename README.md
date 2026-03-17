@@ -1,6 +1,6 @@
 # GridWorld RL (Value Iteration)
 
-![Demo Short](demo_file/demo_short.gif)
+![GridWorld Demo](demo_file/demo_main.gif)
 
 ## Overview
 This project implements a GridWorld environment to demonstrate the core concepts of Reinforcement Learning (RL), specifically focusing on **Value Iteration**. Users can interactively design their own GridWorld by placing a start point, goals, traps, and obstacles. The application visualizes how the State Value Function ($V$) and the corresponding Policy ($\pi$) evolve iteratively based on the Markov Decision Process (MDP) parameters such as Discount Factor ($\gamma$), Transition Noise, and Step Reward. 
@@ -33,9 +33,21 @@ GridWorld/
     - Observe how values propagate through the grid and how the optimal policy updates dynamically.
 4. **Policy Extraction & Pathfinding**: Once the optimal policy is computed, the application can extract and draw the optimal path from the Start state to the Goal.
 
+## 環境需求 (Environment Requirements)
+此專案採用 Python Flask 作為後端伺服器處理「價值迭代算法」數學運算。若開發者欲進行源碼修改或使用 Docker 容器化技術發布，建議具備以下環境版本：
+*   **Python**: 3.8+ (核心必備，運行 Flask 伺服器與後端 RL 引擎)
+*   **HTML5 / CSS3 / JavaScript**: (ES6+ 標準，用於前端動態網格互動)
+*   **Java**: 11+ (若未來需擴充 Java Backend 模組)
+
+主要依賴套件可參考 `requirements.txt`：
+*   `Flask`
+*   `numpy`
+
 ## Demo
 
 [GridWorld NxN **the number of grid < n-2** ](https://guanyuxx.github.io/GridWorld/)
+
+https://github.com/GuanYuXx/GridWorld/raw/main/demo_file/demo_main.mp4
 
 ## Repository
 [https://github.com/GuanYuXx/GridWorld](https://github.com/GuanYuXx/GridWorld)
