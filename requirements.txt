@@ -1,0 +1,6 @@
+# 此專案目前分支 (non_flask) 為純前端靜態網頁架構，無特殊之 Python backend 依賴。
+# 若需考量 Docker 容器化測試，或切換至原 Flask 版本 (main 分支)，建議安裝以下環境：
+
+Flask==2.2.3
+numpy==1.24.2
+pytest==7.2.2
