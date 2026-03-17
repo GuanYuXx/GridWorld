@@ -36,9 +36,20 @@ $(document).ready(function() {
 
         // Prevent multiple goals/starts just to be safe, but MDP allows multiple goals if we want.
         // Let's allow multiple goals/traps, but only one start.
-        if (type === 'start') {
+        if (gridData[r][c] === type) {
+            // Toggle off if the same type is clicked again
+            type = 'empty';
+        } else if (type === 'start') {
             $('.cell[data-type="start"]').attr('data-type', 'empty');
             for(let i=0; i<n; i++) for(let j=0; j<n; j++) if(gridData[i][j]==='start') gridData[i][j]='empty';
+        } else if (type === 'obstacle') {
+            let obsCount = 0;
+            for(let i=0; i<n; i++) for(let j=0; j<n; j++) if(gridData[i][j] === 'obstacle') obsCount++;
+            
+            if (obsCount >= n - 2) {
+                // Silently return without annoying popup
+                return;
+            }
         }
 
         cellObj.attr('data-type', type);
