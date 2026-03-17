@@ -35,7 +35,7 @@ GridWorld/
 
 ## Demo
 
-[https://github.com/GuanYuXx/GridWorld/raw/main/demo_file/Demo.mp4](https://guanyuxx.github.io/GridWorld/)
+[GridWorld NxN **the number of grid < n-2** ](https://guanyuxx.github.io/GridWorld/)
 
 ## Repository
 [https://github.com/GuanYuXx/GridWorld](https://github.com/GuanYuXx/GridWorld)
